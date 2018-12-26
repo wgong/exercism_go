@@ -5,15 +5,15 @@ import "unicode"
 
 // IsIsogram checks if word is isogram
 func IsIsogram(word string) bool {
-	var mDup = map[rune]int{}
+	var mDup = map[rune]bool{}
 	for _, c := range word {
-		c = unicode.ToUpper(c)
-		if c == ' ' || c == '-' {
+		if unicode.IsLetter(c) == false {
 			continue
 		}
-		mDup[c]++
-		if mDup[c] > 1 {
+		if mDup[unicode.ToUpper(c)] {
 			return false
+		} else {
+ 			mDup[unicode.ToUpper(c)] = true
 		}
 	}
 	return true
