@@ -33,17 +33,3 @@ func ConcurrentFrequency(words []string) FreqMap {
 	return mRes
 
 }
-
-// helper to split a string into N slices
-func splitToSlice(s string, N int) []string {
-	if N < 2 {
-		return []string{s}
-	}
-	chunkSize := int(len(s)/N) + 1
-	var s2 []string
-	for i := 0; i < N-1; i++ {
-		s2 = append(s2, s[i*chunkSize:(i+1)*chunkSize])
-	}
-	s2 = append(s2, s[(N-1)*chunkSize:])
-	return s2
-}
