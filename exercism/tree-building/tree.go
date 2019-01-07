@@ -22,9 +22,10 @@ func Build(records []Record) (*Node, error) {
 		return nil, nil
 	}
 
-	mapIDNode := make(map[int]*Node)
-	mapNodeDefined := make(map[Record]bool)
-	bHasRoot := false
+	mapIDNode := make(map[int]*Node)        //Node map
+	mapNodeDefined := make(map[Record]bool) //track Node
+	bHasRoot := false                       // track Root Node
+	maxNodeID := 0
 
 	for _, rec := range records {
 
@@ -67,6 +68,14 @@ func Build(records []Record) (*Node, error) {
 
 		mapNodeDefined[rec] = true
 
+		if id > maxNodeID {
+			maxNodeID = id
+		}
+
+	}
+
+	if maxNodeID >= len(mapIDNode) {
+		return nil, errors.New("non-continuous")
 	}
 
 	if !bHasRoot {
@@ -90,11 +99,11 @@ func addChildInOrder(children []*Node, child *Node) []*Node {
 	for k := range mIDNode {
 		idList = append(idList, k)
 	}
-
 	sort.Ints(idList)
+
 	children2 := []*Node{}
-	for i := 0; i < len(idList); i++ {
-		children2 = append(children2, mIDNode[idList[i]])
+	for _, id := range idList {
+		children2 = append(children2, mIDNode[id])
 	}
 	return children2
 }
