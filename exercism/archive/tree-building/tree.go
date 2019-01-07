@@ -2,6 +2,7 @@ package tree
 
 import (
 	"errors"
+	"fmt"
 	"sort"
 )
 
@@ -18,10 +19,6 @@ type Node struct {
 
 // Build builds tree from input Records
 func Build(records []Record) (*Node, error) {
-	if records == nil || len(records) == 0 {
-		return nil, nil
-	}
-
 	mapIDNode := make(map[int]*Node)
 	mapNodeDefined := make(map[Record]bool)
 	bHasRoot := false
@@ -33,10 +30,11 @@ func Build(records []Record) (*Node, error) {
 		}
 
 		id, parent := rec.ID, rec.Parent
+		fmt.Println("\nid, parent = ", id, parent)
 
 		switch {
 		case id == 0 && id == parent: // root Node
-
+			fmt.Println("set ROOT")
 			if _, exist := mapIDNode[id]; !exist {
 				mapIDNode[id] = &Node{ID: id, Children: nil}
 			}
@@ -45,25 +43,29 @@ func Build(records []Record) (*Node, error) {
 
 			pNode, existNode := mapIDNode[id]
 			if !existNode {
-
+				fmt.Println("Create Node")
 				pNode = &Node{ID: id, Children: nil}
 				mapIDNode[id] = pNode
 
+			} else {
+
+				fmt.Println("Exist Node")
 			}
 
 			pParNode, existParNode := mapIDNode[parent]
 			if !existParNode {
-
+				fmt.Println("Create parent")
 				pParNode = &Node{ID: parent, Children: []*Node{pNode}}
 				mapIDNode[parent] = pParNode
 
 			} else {
-
+				fmt.Println("Exist parent")
 				pParNode.Children = addChildInOrder(pParNode.Children, pNode)
 			}
 		default:
 			return nil, errors.New("invalid record")
 		}
+		fmt.Println(mapIDNode)
 
 		mapNodeDefined[rec] = true
 
@@ -90,8 +92,8 @@ func addChildInOrder(children []*Node, child *Node) []*Node {
 	for k := range mIDNode {
 		idList = append(idList, k)
 	}
-
 	sort.Ints(idList)
+
 	children2 := []*Node{}
 	for i := 0; i < len(idList); i++ {
 		children2 = append(children2, mIDNode[idList[i]])
